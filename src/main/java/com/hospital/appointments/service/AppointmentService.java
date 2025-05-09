@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,12 +20,6 @@ public class AppointmentService {
 
     @Autowired
     private AppointmentRepository appointmentRepository;
-
-    @Autowired
-    private DoctorRepository doctorRepository;
-
-    @Autowired
-    private RoomRepository officeRepository;
 
     public Appointment createAppointment(Appointment appointment) {
 
@@ -74,38 +69,16 @@ public class AppointmentService {
     }
 
     public List<Appointment> getAppointmentsByDoctorAndDate(Long doctorId, LocalDate date) {
-        return appointmentRepository.findByDoctor_IdAndTimeBetween(
-                doctorId,
-                date.atStartOfDay(),
-                date.plusDays(1).atStartOfDay()
-        );
-    }
 
-    public List<Appointment> getAppointmentsByOfficeAndDate(Long officeId, LocalDate date) {
-        return appointmentRepository.findByRoom_IdAndTimeBetween(
-                officeId,
-                date.atStartOfDay(),
-                date.plusDays(1).atStartOfDay()
-        );
-    }
-
-    public void cancelAppointment(Long id) {
-        Appointment a = appointmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
-        if (a.getTime().isAfter(LocalDateTime.now())) {
-            appointmentRepository.deleteById(id);
+        if (doctorId != null && date != null) {
+            return appointmentRepository.findByDoctor_IdAndTimeBetween(
+                    doctorId,
+                    date.atStartOfDay(),
+                    date.plusDays(1).atStartOfDay()
+            );
         } else {
-            throw new IllegalArgumentException("No se puede cancelar una cita ya vencida o en progreso.");
+            return appointmentRepository.findAll();
         }
-    }
 
-    public Appointment updateAppointment(Long id, Appointment updated) {
-        Appointment original = appointmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
-
-        // Reaplica la lógica de validación como en create
-        // Puede simplificarse si haces refactor y compartes la lógica
-        updated.setId(id); // mantener ID original
-        return createAppointment(updated); // reutilizamos validaciones
     }
 }

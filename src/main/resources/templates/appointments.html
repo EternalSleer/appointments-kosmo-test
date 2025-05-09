@@ -38,7 +38,7 @@
         <tr th:each="a : ${appointments}">
             <td th:text="${a.patientName}"></td>
             <td th:text="${a.doctor.firstName} + ' ' + ${a.doctor.lastName}"></td>
-            <td th:text="'#' + ${a.room.number} + ' (Floor ' + ${a.room.floor} + ')'"></td>
+            <td th:text="'#' + ${a.room.number} + ' (Piso ' + ${a.room.floor} + ')'"></td>
             <td th:text="${#temporals.format(a.time, 'yyyy-MM-dd HH:mm')}"></td>
             <td>
                 <a th:href="@{'/appointments/edit/' + ${a.id}}" class="btn btn-sm btn-outline-warning">Edit</a>

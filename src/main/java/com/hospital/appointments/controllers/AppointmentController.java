@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -39,8 +40,9 @@ public class AppointmentController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             Model model) {
 
-        //List<Appointment> appointments = appointmentService.findAll();
-        model.addAttribute("appointments", appointmentRepository.findAll());
+        List<Appointment> appointments = appointmentService.getAppointmentsByDoctorAndDate(doctorId, date);
+
+        model.addAttribute("appointments", appointments);
         model.addAttribute("doctors", doctorRepository.findAll());
 
         return "appointments";
@@ -70,16 +72,16 @@ public class AppointmentController {
 
     @GetMapping("/edit/{id}")
     public String editAppointment(@PathVariable Long id, Model model) {
-//        Appointment appointment = appointmentRepository.findById(id).orElseThrow();
-//        model.addAttribute("appointment", appointment);
-//        model.addAttribute("doctors", doctorRepository.findAll());
-//        model.addAttribute("rooms", roomRepository.findAll());
+        Appointment appointment = appointmentRepository.findById(id).orElseThrow();
+        model.addAttribute("appointment", appointment);
+        model.addAttribute("doctors", doctorRepository.findAll());
+        model.addAttribute("rooms", roomRepository.findAll());
         return "new-appointment";
     }
 
     @GetMapping("/delete/{id}")
     public String cancelAppointment(@PathVariable Long id) {
-//        appointmentRepository.deleteById(id);
+        appointmentRepository.deleteById(id);
         return "redirect:/appointments";
     }
 }
