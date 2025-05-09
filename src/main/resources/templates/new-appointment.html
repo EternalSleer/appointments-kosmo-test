@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head"></head>
+<body>
+<nav th:replace="fragments :: navbar"></nav>
+
+<div class="container">
+    <h2 th:text="${appointment.id != null ? 'Edit Appointment' : 'New Appointment'}"></h2>
+
+    <form th:action="@{/appointments/save}" th:object="${appointment}" method="post" class="row g-3">
+
+        <input type="hidden" th:field="*{id}"/>
+
+        <div class="col-md-6">
+            <label class="form-label">Nombre del paciente</label>
+            <input type="text" th:field="*{patientName}" class="form-control" required/>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Fecha y hora</label>
+            <input type="datetime-local" th:field="*{time}" class="form-control" required/>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Doctor</label>
+            <select th:field="*{doctor}" class="form-select" required>
+                <option th:each="doc : ${doctors}" th:value="${doc.id}" th:text="${doc.firstName + ' ' + doc.lastName}"></option>
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Consultorio</label>
+            <select th:field="*{room}" class="form-select" required>
+                <option th:each="room : ${rooms}" th:value="${room.id}" th:text="${room.number}"></option>
+            </select>
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-success">Guardar cita</button>
+            <a th:href="@{/appointments}" class="btn btn-secondary">Cancel</a>
+        </div>
+
+    </form>
+
+    <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
+</div>
+
+<div th:replace="fragments :: scripts"></div>
+</body>
+</html>
